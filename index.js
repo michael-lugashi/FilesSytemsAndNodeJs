@@ -11,32 +11,35 @@ function openFolder(folder){
     return chests
 }
 
-
+let i = 0
+findTreasureSync(openFolder('.\\maze'));
+function findTreasureSync(roomPath) {
+    // console.log(roomPath[i])
+    try {
+      //   console.log(roomPath[i])
+      const data = fs.readFileSync(roomPath[i], 'utf8');
+      // console.log(data);
+      // openChestSync(data);
+      console.log('');
+      i = 0;
+      let chest = (openChestSync(data))
+      if (chest.treasure === true) {
+          console.log('congrats')
+          return
+      }
+      chest = chest.clue
+  
+      findTreasureSync(openFolder(chest))
+    } catch (err) {
+      i++;
+      console.log('didnt');
+      findTreasureSync(roomPath);
+    }
+  }
+  
 function openChestSync(chestPath) {
     console.log(JSON.parse(chestPath))
     return JSON.parse(chestPath)
 }
 openFolder('.\\maze');
 
-
-// try {
-//     const data = fs.readFileSync(`.\\maze-example\\${}, 'utf8'`)
-//     console.log(data)
-//   } catch (err) {
-//     // console.error(err)
-//   }
-
-// process.stdin.on("data", dataBuffer => {
-//     const input = dataBuffer.toString().trim();
-//     try {
-//         // const content = fs.readdirSync(`${__dirname}\\${input}`);
-//         const content = fs.readdirSync(path.relative(__dirname, input));
-//         process.stdout.write(content.join("\n"));
-//         process.exit(0);
-//     } catch(e) {
-//         process.stderr.write(e.toString());
-//         process.exit(1);
-//     }
-// });
-
-// function drawMapSync(currentRoomPath) {}
