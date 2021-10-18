@@ -12,7 +12,10 @@ function openFolder(folder){
 }
 
 
-
+function openChestSync(chestPath) {
+    console.log(JSON.parse(chestPath))
+    return JSON.parse(chestPath)
+}
 openFolder('.\\maze');
 
 
