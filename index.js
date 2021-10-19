@@ -1,44 +1,34 @@
 'use strict';
 const path = require('path');
 const fs = require('fs');
-// this function opens the folders and only the folders inside the maze
+// this function opens a folder
 function openFolder(folder) {
-  let chests = fs
-    .readdirSync(folder)
-    .map((fileName) => path.join(folder, fileName));
-  console.log(chests);
-  return chests;
+  drawMapSync(folder);
+  return fs.readdirSync(folder).map((fileName) => path.join(folder, fileName));
 }
 
 let i = 0;
-drawMapSync('.\\maze');
 findTreasureSync(openFolder('.\\maze'));
 // this function accepts an array of paths and goes over them until one works then checks the paths in that path.
-function findTreasureSync(roomPath) {
+function findTreasureSync(chestPaths) {
   try {
-    const data = fs.readFileSync(roomPath[i], 'utf8');
-    console.log(roomPath[i]);
+    const chestContent = openChestSync(chestPaths[i]);
     i = 0;
-
-    let chests = openChestSync(data);
-    if (chests.treasure === true) {
-      console.log('congrats');
+    if (chestContent.treasure === true) {
       return;
     }
 
-    chests = chests.clue;
-    drawMapSync(chests);
-    findTreasureSync(openFolder(chests));
-  } catch (err) {
+    findTreasureSync(openFolder(chestContent.clue));
+
+  } catch {
     i++;
-    findTreasureSync(roomPath);
+    findTreasureSync(chestPaths);
   }
 }
 // lets us check the contents of the chest
 function openChestSync(chestPath) {
-  return JSON.parse(chestPath);
+  return JSON.parse(fs.readFileSync(chestPath, 'utf8'));
 }
-
 // lets us map our movements on the map.txt file
 function drawMapSync(currentRoomPath) {
   fs.writeFileSync('./map.txt', currentRoomPath + '\n', { flag: 'a+' });
